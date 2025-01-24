@@ -1,0 +1,90 @@
+openapi: "3.1.0"
+info:
+  title: "CRM Task Management API"
+  description: "API for managing tasks and handling webhooks in the CRM platform."
+  version: "1.0.0"
+servers:
+  - url: "https://api.crmplatform.com"
+tags:
+  - name: "Tasks"
+    description: "Operations related to task management"
+paths:
+  /api/tasks:
+    post:
+      tags:
+        - "Tasks"
+      summary: "Create a new task"
+      description: "Creates a new task in the CRM platform."
+      operationId: "createTask"
+      requestBody:
+        description: "Task data to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskDto"
+      responses:
+        "201":
+          description: "Task created successfully"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal Server Error - Task creation failed"
+  /api/tasks/webhook:
+    post:
+      tags:
+        - "Tasks"
+      summary: "Handle task status update webhook"
+      description: "Receives task status updates via webhook and updates the task status in the CRM platform."
+      operationId: "handleWebhook"
+      requestBody:
+        description: "Webhook payload to update task status"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookRequestDto"
+      responses:
+        "202":
+          description: "Task status updated successfully"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal Server Error - Task update failed"
+components:
+  schemas:
+    TaskDto:
+      type: "object"
+      required:
+        - taskId
+        - taskName
+        - source
+        - destination
+      properties:
+        taskId:
+          type: "integer"
+          format: "int64"
+        taskName:
+          type: "string"
+        source:
+          type: "string"
+        destination:
+          type: "string"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+    WebhookRequestDto:
+      type: "object"
+      required:
+        - taskId
+        - status
+      properties:
+        taskId:
+          type: "integer"
+          format: "int64"
+        status:
+          type: "string"
+          description: "The status of the task (PROCESSING, COMPLETED, FAILED)"
