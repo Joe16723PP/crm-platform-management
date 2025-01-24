@@ -6,7 +6,7 @@ public class TaskUtils {
 
     public static boolean isValidTaskStatus(String status) {
         try {
-            TaskStatusEnum.valueOf(status);
+            TaskStatusEnum.fromValue(status);
             return true;
         } catch (IllegalArgumentException e) {
             return false;
