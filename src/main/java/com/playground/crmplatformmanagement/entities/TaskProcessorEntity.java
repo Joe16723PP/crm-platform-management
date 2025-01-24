@@ -22,6 +22,9 @@ public class TaskProcessorEntity {
     @Column(name = "source")
     private String source;
 
+    @Column(name = "status")
+    private String status;
+
     @Column(name = "destination")
     private String destination;
 
