@@ -17,22 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class TaskController {
     private final TaskService taskService;
 
-
     @PostMapping
-    public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto taskDto) {
-        try {
-            taskService.createTask(taskDto);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (Exception ignored) {
-            // TODO: differentiated error base on error type
-            return ResponseEntity.internalServerError().build();
-        }
-
+    public ResponseEntity<?> createTask(@RequestBody TaskDto taskDto) {
+        boolean isSuccess = taskService.createTask(taskDto);
+        return isSuccess ? ResponseEntity.status(HttpStatus.CREATED).build() : ResponseEntity.internalServerError().build();
     }
 
     @PostMapping("/webhook")
-    public ResponseEntity<Void> handleWebhook(@RequestBody TaskDto webhookRequest) {
-        taskService.updateTask(webhookRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> handleWebhook(@RequestBody WebhookRequestDto webhookRequest) {
+        boolean isSuccess = taskService.updateTaskStatus(webhookRequest);
+        return isSuccess ? ResponseEntity.status(HttpStatus.CREATED).build() : ResponseEntity.internalServerError().build();
     }
 }
